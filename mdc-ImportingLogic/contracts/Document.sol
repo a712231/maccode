@@ -46,5 +46,9 @@ contract Document{
         return (documentId,authorName,timeStamp,ipfsLink,checkSum);
     }
 
+    function addReview(address _reviewer, int8 _ranking) external{       
+       reviewerRanking[_reviewer] = logicContract._addReview(_reviewer,_ranking,reviewerRanking[_reviewer]);
+    }
+
 
 }

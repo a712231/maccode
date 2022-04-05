@@ -19,7 +19,7 @@ contract MasterDocument is Ownable{
     
     /********* Storage variable  - Start************/ 
     //Map of contracts - Change to documentMap
-    Document[] public documentMap;
+    //Document[] public documentMap;
 
     mapping(string => address) public documentAddressMap;
 
@@ -29,16 +29,16 @@ contract MasterDocument is Ownable{
 
     /********* Constructor************/ 
     //Initialization changes the owner to the deployers address and sets the reviewers
-    constructor(address[] memory _reviewers, address _logicContractAddress)
+    constructor(address _logicContractAddress /*,address[] memory _reviewers*/)
     {   
         //transfer the ownership of the contractor the contract creator
         transferOwnership(msg.sender);
         logicContract = LogicContract(_logicContractAddress);
 
-         //populate the isOwner mapping with the address from the array of owners
-        for (uint iCount=0; iCount<_reviewers.length; iCount++) {
-            addReviewer(_reviewers[iCount]);
-        }
+        //  //populate the isOwner mapping with the address from the array of owners
+        // for (uint iCount=0; iCount<_reviewers.length; iCount++) {
+        //     addReviewer(_reviewers[iCount]);
+        // }
        
     
     }
@@ -47,16 +47,16 @@ contract MasterDocument is Ownable{
     function createDocument(string memory _documentId,string memory _authorName, string memory  _timeStamp, string memory  _ipfsLink, string memory  _checksum, address[] memory _reviewers) public
     {       
         Document document = new Document();
-        documentMap.push(document);
+        //documentMap.push(document);
         documentAddressMap[_documentId] = address(document);
         document._createDocument(_documentId, _authorName,  _timeStamp, _ipfsLink,  _checksum, _reviewers,address(logicContract));
         emit CreateDocument(_documentId);         
     }
 
-    function readDocumentByIndex(uint _index) external view returns(string memory _documentId ,string memory _authorName, string memory  _timeStamp, string memory  _ipfsLink, string memory  _checksum)
-    {
-         return readDocument(address(documentMap[_index]));
-    }
+    // function readDocumentByIndex(uint _index) external view returns(string memory _documentId ,string memory _authorName, string memory  _timeStamp, string memory  _ipfsLink, string memory  _checksum)
+    // {
+    //      return readDocument(address(documentMap[_index]));
+    // }
 
     function readDocumentByID(string memory _documentIdInput) external view returns(string memory _documentId ,string memory _authorName, string memory  _timeStamp, string memory  _ipfsLink, string memory  _checksum)
     {
@@ -69,15 +69,19 @@ contract MasterDocument is Ownable{
          return document._readDocument();
     }
 
+    function addReview(address _documentAddress, address _reviewer, int8 _reviewRanking) external {
+        Document document = Document(_documentAddress);
+        document.addReview(_reviewer, _reviewRanking);
+    }
 
-    //Add reviewer - Can be performed only by the owner of the master document contract
-    function addReviewer(address _reviewer) public onlyOwner{
-       logicContract._addReviewer(_reviewer);
-       emit ReviewerAddition(_reviewer);
-    }
-    //Remove a reviewer - Can be performed only by the owner of the master document contract
-    function removeReviewer(address _reviewer) public onlyOwner{
-        logicContract._removeReviewer(_reviewer);
-        emit ReviewerRemoval(_reviewer);
-    }
+    // //Add reviewer - Can be performed only by the owner of the master document contract
+    // function addReviewer(address _reviewer) public onlyOwner{
+    //    logicContract._addReviewer(_reviewer);
+    //    emit ReviewerAddition(_reviewer);
+    // }
+    // //Remove a reviewer - Can be performed only by the owner of the master document contract
+    // function removeReviewer(address _reviewer) public onlyOwner{
+    //     logicContract._removeReviewer(_reviewer);
+    //     emit ReviewerRemoval(_reviewer);
+    // }
 }
