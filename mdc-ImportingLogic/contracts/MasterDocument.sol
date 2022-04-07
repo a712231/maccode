@@ -69,12 +69,14 @@ contract MasterDocument is Ownable{
          return document._readDocument();
     }
 
-    function addReview(address _documentAddress, address _reviewer, int8 _reviewRanking) external {
+    function addReview(string memory _documentID, address _reviewer, int8 _reviewRanking) external {
+        address _documentAddress = documentAddressMap[_documentID];
         Document document = Document(_documentAddress);
         document.addReview(_reviewer, _reviewRanking);
     }
 
-    function readReview(address _documentAddress, address _reviewer) public view returns (int8 reviewRank){
+    function readReview(string memory _documentID, address _reviewer) public view returns (int8 reviewRank){
+        address _documentAddress = documentAddressMap[_documentID];
         Document document = Document(_documentAddress);
         return document.readReview(_reviewer);
     }

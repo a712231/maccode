@@ -22,9 +22,8 @@ if (window.ethereum) {
   console.log (window.web3.currentProvider)
   
   // contractAddress and abi are setted after contract deploy
-  var contractAddress = '0x0DbC27C290fBC0887AB531f2D024CECf462415de';
-  var abi = JSON.parse('[ { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" } ], "name": "OwnershipTransferred", "type": "event" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "newOwner", "type": "address" } ], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]');
-  
+  var contractAddress = '0xEa22e84465eD794d3Bb34c2f6Bfed23e67cD9e62';
+  var abi = JSON.parse('[ { "inputs": [ { "internalType": "address", "name": "_logicContractAddress", "type": "address" } ], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "contractAddress", "type": "address" }, { "indexed": false, "internalType": "address", "name": "reviewer", "type": "address" } ], "name": "ContractReviewed", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "string", "name": "_documentId", "type": "string" } ], "name": "CreateDocument", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" } ], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "reviewer", "type": "address" } ], "name": "ReviewerAddition", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": false, "internalType": "address", "name": "reviewer", "type": "address" } ], "name": "ReviewerRemoval", "type": "event" }, { "inputs": [ { "internalType": "string", "name": "_documentID", "type": "string" }, { "internalType": "address", "name": "_reviewer", "type": "address" }, { "internalType": "int8", "name": "_reviewRanking", "type": "int8" } ], "name": "addReview", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "_reviewer", "type": "address" } ], "name": "addReviewer", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "string", "name": "_documentId", "type": "string" }, { "internalType": "string", "name": "_authorName", "type": "string" }, { "internalType": "string", "name": "_timeStamp", "type": "string" }, { "internalType": "string", "name": "_ipfsLink", "type": "string" }, { "internalType": "string", "name": "_checksum", "type": "string" }, { "internalType": "address[]", "name": "_reviewers", "type": "address[]" } ], "name": "createDocument", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "string", "name": "", "type": "string" } ], "name": "documentAddressMap", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "logicContract", "outputs": [ { "internalType": "contract LogicContract", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [ { "internalType": "address", "name": "", "type": "address" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "string", "name": "_documentIdInput", "type": "string" } ], "name": "readDocumentByID", "outputs": [ { "internalType": "string", "name": "_documentId", "type": "string" }, { "internalType": "string", "name": "_authorName", "type": "string" }, { "internalType": "string", "name": "_timeStamp", "type": "string" }, { "internalType": "string", "name": "_ipfsLink", "type": "string" }, { "internalType": "string", "name": "_checksum", "type": "string" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "string", "name": "_documentID", "type": "string" }, { "internalType": "address", "name": "_reviewer", "type": "address" } ], "name": "readReview", "outputs": [ { "internalType": "int8", "name": "reviewRank", "type": "int8" } ], "stateMutability": "view", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "_reviewer", "type": "address" } ], "name": "removeReviewer", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "internalType": "address", "name": "newOwner", "type": "address" } ], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" } ]');
   //contract instance
   contract = new web3.eth.Contract(abi, contractAddress);
   
@@ -50,7 +49,7 @@ if (window.ethereum) {
     var rmd_docid =  document.getElementById("rmd_did").value;
     contract.methods.readDocumentByID(rmd_docid).call().then(function(rmd){
       console.log('The read value for the document : ', rmd);
-      document.getElementById('rmd_document').textContent = rmd;
+      document.getElementById('rmd_document').textContent = JSON.stringify(rmd);
     })    
   }
 
@@ -69,12 +68,28 @@ if (window.ethereum) {
     })    
   }
 
-  function addReviewer(){
+  function readReview(){
+    var readrv_rvwaddr = document.getElementById("readrv_rvwaddr").value;
+    var readrv_docid = document.getElementById("readrv_docid").value;
+    contract.methods.readReview(readrv_docid,readrv_rvwaddr).call().then(function(rvw) {
+      console.log('The read value for the review is : ', rvw);
+      document.getElementById('readrv_transactionRes').textContent = JSON.stringify(rvw);
+    })
+  }
+  function addReview(){
+    var addrv_rvwaddr = document.getElementById("addrv_rvwaddr").value;
+    var addrv_docid = document.getElementById("addrv_docid").value;
+    var addrv_rvw = document.getElementById("addrv_rvw").value;
+    contract.methods.addReview(addrv_docid, addrv_rvwaddr, addrv_rvw).send({from:account}).then(function(tx) {
+      document.getElementById('addrv_transactionRes').textContent = JSON.stringify(tx);
+      
+    })
+  }
 
-    var addrvw_rvwaddr = document.getElementById("addrvw_rvwaddr").value();
+  function addReviewer(){
+    var addrvw_rvwaddr = document.getElementById("addrvw_rvwaddr").value;
     contract.methods.addReviewer(addrvw_rvwaddr).send({from:account}).then(function(tx) {
       document.getElementById('addrvw_transactionRes').textContent = JSON.stringify(tx);
       alert(JSON.stringify(tx));
     })
-
   }
