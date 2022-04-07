@@ -74,14 +74,19 @@ contract MasterDocument is Ownable{
         document.addReview(_reviewer, _reviewRanking);
     }
 
-    // //Add reviewer - Can be performed only by the owner of the master document contract
-    // function addReviewer(address _reviewer) public onlyOwner{
-    //    logicContract._addReviewer(_reviewer);
-    //    emit ReviewerAddition(_reviewer);
-    // }
-    // //Remove a reviewer - Can be performed only by the owner of the master document contract
-    // function removeReviewer(address _reviewer) public onlyOwner{
-    //     logicContract._removeReviewer(_reviewer);
-    //     emit ReviewerRemoval(_reviewer);
-    // }
+    function readReview(address _documentAddress, address _reviewer) public view returns (int8 reviewRank){
+        Document document = Document(_documentAddress);
+        return document.readReview(_reviewer);
+    }
+
+    //Add reviewer - Can be performed only by the owner of the master document contract
+    function addReviewer(address _reviewer) public onlyOwner{
+       logicContract._addReviewer(_reviewer);
+       emit ReviewerAddition(_reviewer);
+    }
+    //Remove a reviewer - Can be performed only by the owner of the master document contract
+    function removeReviewer(address _reviewer) public onlyOwner{
+        logicContract._removeReviewer(_reviewer);
+        emit ReviewerRemoval(_reviewer);
+    }
 }

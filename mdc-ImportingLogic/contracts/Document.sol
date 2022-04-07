@@ -50,5 +50,8 @@ contract Document{
        reviewerRanking[_reviewer] = logicContract._addReview(_reviewer,_ranking,reviewerRanking[_reviewer]);
     }
 
+    function readReview(address _reviewer) public view returns(int8 _reviewRank){
+        return reviewerRanking[_reviewer];
+    }
 
 }
