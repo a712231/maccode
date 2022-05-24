@@ -1,0 +1,85 @@
+@charset "UTF-8";
+/* CSS Document */
+
+ html, body {
+        height: 100%;
+        margin: 0px;
+    }
+
+.container {
+	height: 100%;
+	margin: auto;
+  	width: 100%;
+  	background-color: #000000;
+  	padding: 10px;
+	
+}
+
+
+/*Bouncing Balls */
+
+
+.bouncer {
+	margin: auto;
+	display: flex;
+	justify-content: space-around;
+	align-items: flex-end;
+	width: 200px;
+	height: 200px;
+	/* background-color: #F2648D; */
+	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
+}
+
+.bouncer div {
+	width: 24px;
+	height: 24px;
+	background-color: #FFFFFF;
+	border-radius: 50%;
+	animation: bouncer 0.5s cubic-bezier(.19,.57,.3,.98) infinite alternate;
+}
+
+
+
+.bouncer div:nth-child(2){
+	/* background-color: #568200; */
+	animation-name: colorChange;
+	animation-delay: 0.1s;
+
+}
+
+.bouncer div:nth-child(3){
+	animation-name: bouncer;
+	animation-delay: 0.2s;
+}
+
+.bouncer div:nth-child(4){
+	/* background-color: #568200; */
+	animation-name: colorChange;
+	animation-delay: 0.3s;
+}
+
+.bouncer div:nth-child(5){
+	/* background-color: #568200; */
+	animation-name: colorChange;
+	animation-delay: 0.4s;
+}
+
+
+@keyframes bouncer {
+	from { transform: translateY(0px) }
+	to { transform: translateY(-50px) }
+}
+
+
+@keyframes colorChange {
+	from { transform: translateY(0px) }
+	to { transform: translateY(-50px) }
+  	from {background-color: #FFFFFF;}
+  	to {background-color: #568200;}
+} 
+
+
